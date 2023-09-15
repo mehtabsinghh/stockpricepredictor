@@ -6,6 +6,11 @@
 </head>
 <body>
     <h1>Stock Price Graph</h1>
-    <img src="data:image/png;base64,{{ img_data }}" alt="Graph">
+    <form method="POST">
+        <label for="stock_symbol">Enter Stock Symbol:</label>
+        <input type="text" id="stock_symbol" name="stock_symbol" required>
+        <input type="submit" value="Submit">
+    </form>
+    <img src="{{ url_for('static', filename='graph.png') }}" alt="Graph">
 </body>
 </html>
