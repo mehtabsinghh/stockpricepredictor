@@ -32,22 +32,22 @@ def generate_and_save_stock_graph(stock_symbol):
     model = LinearRegression()
     model.fit(X_poly, closing_prices)
 
-    # Generate dates for historical data and prediction (e.g., extending for 1 additional month)
+    # Generate dates for historical data and prediction (e.g., extending for 15 days ahead)
     all_dates = stock_data.index
-    future_dates = [all_dates[-1] + datetime.timedelta(days=i) for i in range(1, 32)]
+    future_dates = [all_dates[-1] + datetime.timedelta(days=i) for i in range(1, 16)]  # Extend for 15 days ahead
     
-    # Extend the polynomial regression line into the future
-    future_days = np.arange(len(days), len(days) + 31).reshape(-1, 1)
-    X_future_poly = poly.transform(future_days)
-    y_pred = model.predict(X_future_poly)
-    
-    # Ensure all_dates has the correct length
-    all_dates = np.concatenate((all_dates, future_dates[-31:]))
+    # Create a continuous range of days for the entire graph, including future dates
+    all_days = np.arange(0, len(days) + 15).reshape(-1, 1)
+    all_X_poly = poly.transform(all_days)
+    all_y_pred = model.predict(all_X_poly)
 
-    # Plot historical and predicted stock prices
+    # Plot historical stock prices
     plt.figure(figsize=(10, 6))
-    plt.plot(all_dates[:len(closing_prices)], closing_prices, label=f'{stock_symbol} Closing Price', color='blue')
-    plt.plot(all_dates[-31:], y_pred, label='Predicted Prices', color='red')
+    plt.plot(all_dates, closing_prices, label=f'{stock_symbol} Closing Price', color='blue')
+
+    # Plot the polynomial regression model line throughout the entire graph
+    plt.plot(np.concatenate((all_dates, future_dates)), np.concatenate((all_y_pred[:len(days)], all_y_pred[len(days):])), label='Predicted Prices', color='red')
+
     plt.xlabel('Date')
     plt.ylabel('Price (USD)')
     plt.title(f'Stock Price Prediction for {stock_symbol}')
