@@ -3,14 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Stock Graph</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Stock Price Graph</h1>
+    <h1>Stock Price Predictor</h1>
     <form method="POST">
         <label for="stock_symbol">Enter Stock Symbol:</label>
         <input type="text" id="stock_symbol" name="stock_symbol" required>
+        <label for="model">Select Model:</label>
+        <select id="model" name="model">
+            <option value="Linear Regression">Linear Regression</option>
+            <option value="Random Forest">Random Forest</option>
+            <option value="LSTM">LSTM</option>  
+        </select>
         <input type="submit" value="Submit">
     </form>
-    <img src="{{ url_for('static', filename='graph.png') }}" alt="Graph">
+    <div class="stock-info">
+        <p>Current Price: £{{ current_price }}</p>
+        <p class="predicted-price">Predicted Price: £{{ predicted_price }}</p>
+    </div>
+    <div class="graph-container">
+        <img src="{{ url_for('static', filename='graph.png') }}" alt="Graph">
+    </div>
 </body>
 </html>
